@@ -1,7 +1,10 @@
 <template>
   <svg
-    v-bind="$props"
-    preserveAspectRatio="xMidYMid meet"
+    :class="class"
+    :viewBox="viewBox"
+    :width="width"
+    :height="height"
+    preserveAspectRatio="xMidYMid mee`"
     xmlns="http://www.w3.org/2000/svg"
   >
     <slot />

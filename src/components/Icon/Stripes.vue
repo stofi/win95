@@ -4,8 +4,6 @@
       <title>Layer 1</title>
       <line
         transform="rotate(-45, 20.397, 21.7868)"
-        stroke-linecap="undefined"
-        stroke-linejoin="undefined"
         id="svg_5"
         y2="21.78678"
         x2="127.59424"
@@ -17,8 +15,6 @@
       />
       <line
         transform="rotate(-45, 26.6358, 26.6459)"
-        stroke-linecap="undefined"
-        stroke-linejoin="undefined"
         id="svg_2"
         y2="26.64593"
         x2="133.83305"
@@ -30,8 +26,6 @@
       />
       <line
         transform="rotate(-45, 33.4126, 30.5302)"
-        stroke-linecap="undefined"
-        stroke-linejoin="undefined"
         id="svg_8"
         y2="30.53023"
         x2="140.60991"
