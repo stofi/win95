@@ -1,11 +1,11 @@
 <template>
-  <WWindow :width="480" :height="320">
+  <WWindow :width="480" :height="320" :x="450" :y="50">
     <template #title>Big Window</template>
     <template #default>
       <div>content</div>
     </template>
   </WWindow>
-  <WWindow :width="240" :height="120">
+  <WWindow :width="240" :height="120" :x="150" :y="250">
     <template #title>Little Window</template>
     <template #default>
       <div class="flex flex-col h-full">
@@ -18,7 +18,7 @@
       </div>
     </template>
   </WWindow>
-  <WWindow :resizable="false"></WWindow>
+  <WWindow :x="200" :y="100" :resizable="false"></WWindow>
 </template>
 <script setup lang="ts">
 import WWindow from '../components/WWindow.vue'
