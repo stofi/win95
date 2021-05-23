@@ -12,10 +12,8 @@ import {
   Ref,
 } from 'vue'
 
-interface Coordinates {
-  x: number
-  y: number
-}
+import { Coordinates, ElementOrNull } from '../types'
+
 const getViewport = () => ({
   viewHeight: Math.max(
     document.documentElement.clientHeight || 0,
@@ -28,8 +26,8 @@ const getViewport = () => ({
 })
 
 export default function (
-  $element: Ref<HTMLElement | null>,
-  $handle: Ref<HTMLElement | null> = ref(null)
+  $element: Ref<ElementOrNull>,
+  $handle: Ref<ElementOrNull>
 ) {
   const dragging = ref(false)
   const offset = reactive<Coordinates>({
@@ -80,13 +78,13 @@ export default function (
           $handle.value.$el
         : $handle.value
       : element
-    
+
     const target: any = event.target
     const isParent = handle.contains(target)
 
     if (!isParent) return
     const { top, left } = element.getBoundingClientRect()
-    
+
     offset.x = event.pageX - left
     offset.y = event.pageY - top
     dragging.value = true

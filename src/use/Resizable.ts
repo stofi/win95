@@ -12,18 +12,9 @@ import {
   Ref,
 } from 'vue'
 
-interface Coordinates {
-  x: number
-  y: number
-}
-interface DraggableProps {}
 
-interface options {
-  minWidth?: number
-  minHeight?: number
-  width?: number
-  height?: number
-}
+import { Coordinates, ResizableOptions, ElementOrNull } from '../types'
+
 
 const getViewport = () => ({
   viewHeight: Math.max(
@@ -37,9 +28,9 @@ const getViewport = () => ({
 })
 
 export default function (
-  $element: Ref<HTMLElement | null>,
-  $handle: Ref<HTMLElement | null>,
-  options: options = {}
+  $element: Ref<ElementOrNull>,
+  $handle: Ref<ElementOrNull>,
+  options: ResizableOptions = {}
 ) {
   const resizing = ref(false)
   const fullscreen = ref(false)
