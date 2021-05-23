@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import configureRouter from './router'
 import './assets/tailwind.css'
+import './assets/font.css'
 
 const app = createApp(App)
 const router = configureRouter()
