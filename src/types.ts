@@ -10,6 +10,7 @@ export interface ResizableOptions {
   minHeight?: number
   width?: number
   height?: number
+  enabled?: any
 }
 
 export interface WindowOptions {
@@ -17,8 +18,13 @@ export interface WindowOptions {
   minHeight?: number
   width?: number
   height?: number
-  resizable?: false
-  draggable?: false
+  resizable?: boolean
+  draggable?: boolean
+  x?: number
+  y?: number
+}
+export interface DraggableOptions {
+  enabled?: any
 }
 
 export type ElementOrNull = HTMLElement | null

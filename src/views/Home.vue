@@ -18,6 +18,7 @@
       </div>
     </template>
   </WWindow>
+  <WWindow :resizable="false"></WWindow>
 </template>
 <script setup lang="ts">
 import WWindow from '../components/WWindow.vue'

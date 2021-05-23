@@ -2,6 +2,7 @@
   <WBox
     @mousedown="activateWindow"
     ref="windowElement"
+    :tabindex="isActive ? -1 : 1000"
     :fullscreen="fullscreen"
     class="absolute flex flex-col select-none"
     :style="{ ...computedStyle }"
@@ -18,7 +19,7 @@
       <slot name="default" />
     </WBody>
     <IconStripes
-      v-if="!fullscreen"
+      v-if="!fullscreen && resizable"
       ref="resizeHandle"
       :width="8"
       :height="8"
@@ -40,6 +41,10 @@ import ButtonGroupWindow from './ButtonGroup/Window.vue'
 const props = defineProps({
   width: { type: Number, default: 200 },
   height: { type: Number, default: 100 },
+  x: { type: Number, default: 0 },
+  y: { type: Number, default: 0 },
+  draggable: { type: Boolean, default: true },
+  resizable: { type: Boolean, default: true },
 })
 
 const windowElement = ref(null)
@@ -55,5 +60,9 @@ const {
 } = useWindow(windowElement, dragHandle, resizeHandle, {
   width: props.width,
   height: props.height,
+  draggable: props.draggable,
+  resizable: props.resizable,
+  x: props.x,
+  y: props.y,
 })
 </script>

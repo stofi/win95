@@ -25,14 +25,10 @@ export default function (
   resizeHandle: Ref<ElementOrNull>,
   options: WindowOptions = {}
 ) {
-
-  const { style: draggableStyle, dragging } = useDraggable(
-    windowElement,
-    dragHandle
-  )
-
   const { style: wmStyle, front } = useStack()
   const { activate, isActive } = useActive()
+
+  const resizeEnabled = computed(() => options.resizable)
   const {
     style: resizeStyle,
     resizing,
@@ -43,6 +39,23 @@ export default function (
   } = useResizable(windowElement, resizeHandle, {
     height: options.height || 100,
     width: options.width || 200,
+    enabled: resizeEnabled
+  })
+
+  const dragEnabled = computed(() =>
+    fullscreen.value ? false : options.draggable
+  )
+
+  const {
+    style: draggableStyle,
+    dragging,
+    move,
+  } = useDraggable(windowElement, dragHandle, {
+    enabled: dragEnabled,
+  })
+  move({
+    x: options.x || 0,
+    y: options.y || 0,
   })
 
   function activateWindow() {

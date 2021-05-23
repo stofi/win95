@@ -12,7 +12,7 @@ import {
   Ref,
 } from 'vue'
 
-import { Coordinates, ElementOrNull } from '../types'
+import { Coordinates, ElementOrNull, DraggableOptions } from '../types'
 
 const getViewport = () => ({
   viewHeight: Math.max(
@@ -27,7 +27,8 @@ const getViewport = () => ({
 
 export default function (
   $element: Ref<ElementOrNull>,
-  $handle: Ref<ElementOrNull>
+  $handle: Ref<ElementOrNull>,
+  options: DraggableOptions = { enabled: true }
 ) {
   const dragging = ref(false)
   const offset = reactive<Coordinates>({
@@ -95,6 +96,10 @@ export default function (
   function mouseMoveHandler(event: MouseEvent) {
     if (!dragging.value) return
     const coors: Coordinates = { x: event.pageX, y: event.pageY }
+    drag(coors)
+  }
+  function drag(coors: Coordinates) {
+    if (!options.enabled.value) return
     move(coors)
   }
   function move({ x, y }: Coordinates) {
@@ -125,6 +130,7 @@ export default function (
   }))
   return {
     dragging,
+    move,
     style,
   }
 }

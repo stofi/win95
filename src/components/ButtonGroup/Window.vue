@@ -1,8 +1,8 @@
 <template>
   <div class="flex justify-end items-center -mt-px space-x-1">
-    <ButtonMinimize @click="$emit('minimize')"/>
-    <ButtonMaximize @click="$emit('maximize')"/>
-    <ButtonClose @click="$emit('close')"/>
+    <ButtonMinimize  @click="$emit('minimize')"/>
+    <ButtonMaximize  @click="$emit('maximize')"/>
+    <ButtonClose  @click="$emit('close')"/>
   </div>
 </template>
 <script setup lang="ts">

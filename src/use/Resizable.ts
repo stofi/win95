@@ -12,9 +12,7 @@ import {
   Ref,
 } from 'vue'
 
-
 import { Coordinates, ResizableOptions, ElementOrNull } from '../types'
-
 
 const getViewport = () => ({
   viewHeight: Math.max(
@@ -30,7 +28,7 @@ const getViewport = () => ({
 export default function (
   $element: Ref<ElementOrNull>,
   $handle: Ref<ElementOrNull>,
-  options: ResizableOptions = {}
+  options: ResizableOptions = { enabled: true }
 ) {
   const resizing = ref(false)
   const fullscreen = ref(false)
@@ -96,7 +94,12 @@ export default function (
     fullscreen.value = false
   }
 
-  function resize({ x, y }: Coordinates) {
+  function resize(coors: Coordinates) {
+    if (!options.enabled.value) return
+    _resize(coors)
+  }
+
+  function _resize({ x, y }: Coordinates) {
     const minHeight = options.minHeight || 100
     const minWidth = options.minWidth || 200
 
