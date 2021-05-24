@@ -12,7 +12,13 @@ import {
   Ref,
 } from 'vue'
 
-import { Coordinates, ResizableOptions, ComponentOrElementOrNull } from '../types'
+import useDocumentEvents from './GlobalEvents'
+
+import {
+  Coordinates,
+  ResizableOptions,
+  ComponentOrElementOrNull,
+} from '../types'
 import { getElement } from '../utils'
 
 const getViewport = () => ({
@@ -27,7 +33,7 @@ const getViewport = () => ({
 })
 
 const defaultOptions: ResizableOptions = {
-  enabled: true
+  enabled: true,
 }
 
 export default function (
@@ -52,28 +58,18 @@ export default function (
     return getElement(handleRef.value)
   })
 
-
   const cursor = computed(() => (resizing.value ? 'nw-resize' : 'auto'))
 
-  onBeforeMount(() => {
-    document.addEventListener('mousedown', dragStart)
-    document.addEventListener('mouseup', dragEnd)
-    document.addEventListener('mousemove', dragMove)
-    document.addEventListener('touchstart', dragStart)
-    document.addEventListener('touchend', dragEnd)
-    document.addEventListener('touchcancel', dragEnd)
-    document.addEventListener('touchmove', dragMove)
-  })
-  onBeforeUnmount(() => {
-    document.removeEventListener('mousedown', dragStart)
-    document.removeEventListener('mouseup', dragEnd)
-    document.removeEventListener('mousemove', dragMove)
-    document.removeEventListener('touchstart', dragStart)
-    document.removeEventListener('touchend', dragEnd)
-    document.removeEventListener('touchcancel', dragEnd)
-    document.removeEventListener('touchmove', dragMove)
-  })
-  
+  useDocumentEvents([
+    { event: 'mousedown', handler: dragStart },
+    { event: 'mouseup', handler: dragEnd },
+    { event: 'mousemove', handler: dragMove },
+    { event: 'touchstart', handler: dragStart },
+    { event: 'touchend', handler: dragEnd },
+    { event: 'touchcancel', handler: dragEnd },
+    { event: 'touchmove', handler: dragMove },
+  ])
+
   function dragStart(event: MouseEvent | TouchEvent) {
     mouseDownHandler(event as MouseEvent)
   }
@@ -115,7 +111,6 @@ export default function (
   }
 
   function resize(coors: Coordinates) {
-
     if (typeof options.enabled === 'boolean') {
       if (options.enabled) {
         _resize(coors)

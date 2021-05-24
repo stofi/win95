@@ -12,11 +12,14 @@ import {
   Ref,
 } from 'vue'
 
+import useDocumentEvents from './GlobalEvents'
+
 import {
   Coordinates,
   ComponentOrElementOrNull,
   DraggableOptions,
 } from '../types'
+
 import { getElement } from '../utils'
 
 const getViewport = () => ({
@@ -66,26 +69,16 @@ export default function (
     }
   }
 
-  onBeforeMount(() => {
-    document.addEventListener('mousedown', dragStart)
-    document.addEventListener('mouseup', dragEnd)
-    document.addEventListener('mousemove', dragMove)
-    document.addEventListener('touchstart', dragStart)
-    document.addEventListener('touchend', dragEnd)
-    document.addEventListener('touchcancel', dragEnd)
-    document.addEventListener('touchmove', dragMove)
-    window.addEventListener('resize', resizeHandler)
-  })
-  onBeforeUnmount(() => {
-    document.removeEventListener('mousedown', dragStart)
-    document.removeEventListener('mouseup', dragEnd)
-    document.removeEventListener('mousemove', dragMove)
-    document.removeEventListener('touchstart', dragStart)
-    document.removeEventListener('touchend', dragEnd)
-    document.removeEventListener('touchcancel', dragEnd)
-    document.removeEventListener('touchmove', dragMove)
-    window.removeEventListener('resize', resizeHandler)
-  })
+  useDocumentEvents([
+    { event: 'mousedown', handler: dragStart },
+    { event: 'mouseup', handler: dragEnd },
+    { event: 'mousemove', handler: dragMove },
+    { event: 'touchstart', handler: dragStart },
+    { event: 'touchend', handler: dragEnd },
+    { event: 'touchcancel', handler: dragEnd },
+    { event: 'touchmove', handler: dragMove },
+    { event: 'resize', handler: resizeHandler, window:true },
+  ])
 
   function dragStart(event: MouseEvent | TouchEvent) {
     mouseDownHandler(event as MouseEvent)
