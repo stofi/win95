@@ -58,6 +58,7 @@ export default function (
     document.addEventListener('mousedown', mouseDownHandler)
     document.addEventListener('mouseup', mouseUpHandler)
     document.addEventListener('mousemove', mouseMoveHandler)
+    window.addEventListener('resize', resizeHandler)
   })
   onBeforeUnmount(() => {
     document.removeEventListener('mousedown', mouseDownHandler)
@@ -98,29 +99,34 @@ export default function (
     const coors: Coordinates = { x: event.pageX, y: event.pageY }
     drag(coors)
   }
-  function drag(coors: Coordinates) {
-    if (!options.enabled.value) return
-    move(coors)
+  function resizeHandler() {
+    move(position)
   }
+  function drag({x,y}: Coordinates) {
+    if (!options.enabled.value) return
+    move({
+      x: x - offset.x,
+      y: y - offset.y,
+    })
+  }
+  
   function move({ x, y }: Coordinates) {
     const { viewWidth, viewHeight } = getViewport()
     const rect = getRect()
-    let newX = x - offset.x
-    let newY = y - offset.y
-    if (newX < 0) {
-      newX = 0
+    if (x + rect.width > viewWidth) {
+      x = viewWidth - rect.width
     }
-    if (newY < 0) {
-      newY = 0
+    if (y + rect.height > viewHeight) {
+      y = viewHeight - rect.height
     }
-    if (newX + rect.width > viewWidth) {
-      newX = viewWidth - rect.width
+    if (x < 0) {
+      x = 0
     }
-    if (newY + rect.height > viewHeight) {
-      newY = viewHeight - rect.height
+    if (y < 0) {
+      y = 0
     }
-    position.x = newX
-    position.y = newY
+    position.x = x
+    position.y = y
   }
 
   const style = computed(() => ({
