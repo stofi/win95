@@ -4,7 +4,7 @@
     :viewBox="viewBox"
     :width="width"
     :height="height"
-    preserveAspectRatio="xMidYMid mee`"
+    preserveAspectRatio="xMidYMid meet"
     xmlns="http://www.w3.org/2000/svg"
   >
     <slot />
