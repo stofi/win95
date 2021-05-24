@@ -4,6 +4,7 @@ import {
   computed,
   defineProps,
   onBeforeMount,
+  onMounted,
   onBeforeUnmount,
   watch,
   nextTick,
@@ -39,7 +40,7 @@ export default function (
   } = useResizable(windowElement, resizeHandle, {
     height: options.height || 100,
     width: options.width || 200,
-    enabled: resizeEnabled
+    enabled: resizeEnabled,
   })
 
   const dragEnabled = computed(() =>
@@ -53,9 +54,11 @@ export default function (
   } = useDraggable(windowElement, dragHandle, {
     enabled: dragEnabled,
   })
-  move({
-    x: options.x || 0,
-    y: options.y || 0,
+  onMounted(() => {
+    move({
+      x: options.x || 0,
+      y: options.y || 0,
+    })
   })
 
   function activateWindow() {
