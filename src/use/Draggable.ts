@@ -12,7 +12,12 @@ import {
   Ref,
 } from 'vue'
 
-import { Coordinates, ElementOrNull, DraggableOptions } from '../types'
+import {
+  Coordinates,
+  ComponentOrElementOrNull,
+  DraggableOptions,
+} from '../types'
+import { getElement } from '../utils'
 
 const getViewport = () => ({
   viewHeight: Math.max(
@@ -25,10 +30,14 @@ const getViewport = () => ({
   ),
 })
 
+const defaultOptions: DraggableOptions = {
+  enabled: true,
+}
+
 export default function (
-  $element: Ref<ElementOrNull>,
-  $handle: Ref<ElementOrNull>,
-  options: DraggableOptions = { enabled: true }
+  elementRef: Ref<ComponentOrElementOrNull>,
+  handleRef: Ref<ComponentOrElementOrNull>,
+  options: DraggableOptions
 ) {
   const dragging = ref(false)
   const offset = reactive<Coordinates>({
@@ -41,16 +50,19 @@ export default function (
   })
   const cursor = computed(() => (dragging.value ? 'move' : 'auto'))
 
+  const $element = computed(() => {
+    return getElement(elementRef.value)
+  })
+  const $handle = computed(() => {
+    if (!handleRef.value) return $element.value
+    return getElement(handleRef.value)
+  })
+
   function getRect() {
     if (!$element.value) return { width: 0, height: 0 }
-    // @ts-ignore
-    const element = $element.value.$el
-      ? // @ts-ignore
-        $element.value.$el
-      : $element.value
     return {
-      width: element.clientWidth,
-      height: element.clientHeight,
+      width: $element.value.clientWidth,
+      height: $element.value.clientHeight,
     }
   }
 
@@ -88,28 +100,13 @@ export default function (
     mouseMoveHandler(event as MouseEvent)
   }
 
-
   function mouseDownHandler(event: MouseEvent) {
-    if (!$element.value) return
-    // @ts-ignore
-    const element: HTMLElement = $element.value.$el
-      ? // @ts-ignore
-        $element.value.$el
-      : $element.value
-
-    const handle = $handle.value
-      ? // @ts-ignore
-        $handle.value.$el
-        ? // @ts-ignore
-          $handle.value.$el
-        : $handle.value
-      : element
-
-    const target: any = event.target
-    const isParent = handle.contains(target)
-
+    if (!$handle || !$handle.value) return
+    const target: EventTarget | null = event.target
+    if (!target) return
+    const isParent = $handle.value.contains(target)
     if (!isParent) return
-    const { top, left } = element.getBoundingClientRect()
+    const { top, left } = $element.value.getBoundingClientRect()
 
     offset.x = event.pageX - left
     offset.y = event.pageY - top
@@ -126,14 +123,23 @@ export default function (
   function resizeHandler() {
     move(position)
   }
-  function drag({x,y}: Coordinates) {
-    if (!options.enabled.value) return
-    move({
+  function drag({ x, y }: Coordinates) {
+    const coors = {
       x: x - offset.x,
       y: y - offset.y,
-    })
+    }
+
+    if (typeof options.enabled === 'boolean') {
+      if (options.enabled) {
+        move(coors)
+      }
+    } else if (options.enabled && options.enabled.value) {
+      move(coors)
+    } else if (defaultOptions.enabled!) {
+      move(coors)
+    }
   }
-  
+
   function move({ x, y }: Coordinates) {
     const { viewWidth, viewHeight } = getViewport()
     const rect = getRect()

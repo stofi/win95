@@ -1,4 +1,4 @@
-import { Ref } from 'vue'
+import { Ref, ComponentPublicInstance } from 'vue'
 
 export interface Coordinates {
   x: number
@@ -10,7 +10,7 @@ export interface ResizableOptions {
   minHeight?: number
   width?: number
   height?: number
-  enabled?: any
+  enabled?: boolean | Ref<boolean>
 }
 
 export interface WindowOptions {
@@ -24,7 +24,7 @@ export interface WindowOptions {
   y?: number
 }
 export interface DraggableOptions {
-  enabled?: any
+  enabled?: boolean | Ref<boolean>
 }
 
-export type ElementOrNull = HTMLElement | null
+export type ComponentOrElementOrNull = HTMLElement | null | ComponentPublicInstance

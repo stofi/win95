@@ -18,12 +18,12 @@ import useStack from './Stack'
 import useActive from './Active'
 import useResizable from './Resizable'
 
-import { ElementOrNull, WindowOptions } from '../types'
+import { ComponentOrElementOrNull, WindowOptions } from '../types'
 
 export default function (
-  windowElement: Ref<ElementOrNull>,
-  dragHandle: Ref<ElementOrNull>,
-  resizeHandle: Ref<ElementOrNull>,
+  windowElement: Ref<ComponentOrElementOrNull>,
+  dragHandle: Ref<ComponentOrElementOrNull>,
+  resizeHandle: Ref<ComponentOrElementOrNull>,
   options: WindowOptions = {}
 ) {
   const { style: wmStyle, front } = useStack()
