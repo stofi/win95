@@ -88,15 +88,12 @@ export default function (
   })
 
   function dragStart(event: MouseEvent | TouchEvent) {
-    event.preventDefault()
     mouseDownHandler(event as MouseEvent)
   }
   function dragEnd(event: MouseEvent | TouchEvent) {
-    event.preventDefault()
     mouseUpHandler(event as MouseEvent)
   }
   function dragMove(event: MouseEvent | TouchEvent) {
-    event.preventDefault()
     mouseMoveHandler(event as MouseEvent)
   }
 

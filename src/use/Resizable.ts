@@ -12,7 +12,8 @@ import {
   Ref,
 } from 'vue'
 
-import { Coordinates, ResizableOptions, ElementOrNull } from '../types'
+import { Coordinates, ResizableOptions, ComponentOrElementOrNull } from '../types'
+import { getElement } from '../utils'
 
 const getViewport = () => ({
   viewHeight: Math.max(
@@ -25,9 +26,13 @@ const getViewport = () => ({
   ),
 })
 
+const defaultOptions: ResizableOptions = {
+  enabled: true
+}
+
 export default function (
-  $element: Ref<ElementOrNull>,
-  $handle: Ref<ElementOrNull>,
+  elementRef: Ref<ComponentOrElementOrNull>,
+  handleRef: Ref<ComponentOrElementOrNull>,
   options: ResizableOptions = { enabled: true }
 ) {
   const resizing = ref(false)
@@ -40,38 +45,53 @@ export default function (
     x: options.width || 200,
     y: options.height || 100,
   })
+  const $element = computed(() => {
+    return getElement(elementRef.value)
+  })
+  const $handle = computed(() => {
+    return getElement(handleRef.value)
+  })
+
 
   const cursor = computed(() => (resizing.value ? 'nw-resize' : 'auto'))
 
   onBeforeMount(() => {
-    document.addEventListener('mousedown', mouseDownHandler)
-    document.addEventListener('mouseup', mouseUpHandler)
-    document.addEventListener('mousemove', mouseMoveHandler)
+    document.addEventListener('mousedown', dragStart)
+    document.addEventListener('mouseup', dragEnd)
+    document.addEventListener('mousemove', dragMove)
+    document.addEventListener('touchstart', dragStart)
+    document.addEventListener('touchend', dragEnd)
+    document.addEventListener('touchcancel', dragEnd)
+    document.addEventListener('touchmove', dragMove)
   })
   onBeforeUnmount(() => {
-    document.removeEventListener('mousedown', mouseDownHandler)
-    document.removeEventListener('mouseup', mouseUpHandler)
-    document.removeEventListener('mousemove', mouseMoveHandler)
+    document.removeEventListener('mousedown', dragStart)
+    document.removeEventListener('mouseup', dragEnd)
+    document.removeEventListener('mousemove', dragMove)
+    document.removeEventListener('touchstart', dragStart)
+    document.removeEventListener('touchend', dragEnd)
+    document.removeEventListener('touchcancel', dragEnd)
+    document.removeEventListener('touchmove', dragMove)
   })
+  
+  function dragStart(event: MouseEvent | TouchEvent) {
+    mouseDownHandler(event as MouseEvent)
+  }
+  function dragEnd(event: MouseEvent | TouchEvent) {
+    mouseUpHandler(event as MouseEvent)
+  }
+  function dragMove(event: MouseEvent | TouchEvent) {
+    mouseMoveHandler(event as MouseEvent)
+  }
+
   function mouseDownHandler(event: MouseEvent) {
     if (!$element.value || !$handle.value) return
-    // @ts-ignore
-    const element: HTMLElement = $element.value.$el
-      ? // @ts-ignore
-        $element.value.$el
-      : $element.value
-    // @ts-ignore
-    const handle: HTMLElement = $handle.value.$el
-      ? // @ts-ignore
-        $handle.value.$el
-      : $handle.value
-
-    const target: any = event.target
-    const isParent = handle.contains(target)
-
+    const target: EventTarget | null = event.target
+    if (!target) return
+    const isParent = $handle.value.contains(target)
     if (!isParent) return
 
-    const { bottom, right } = element.getBoundingClientRect()
+    const { bottom, right } = $element.value.getBoundingClientRect()
     offset.x = event.pageX - right
     offset.y = event.pageY - bottom
     resizing.value = true
@@ -95,22 +115,24 @@ export default function (
   }
 
   function resize(coors: Coordinates) {
-    if (!options.enabled.value) return
-    _resize(coors)
+
+    if (typeof options.enabled === 'boolean') {
+      if (options.enabled) {
+        _resize(coors)
+      }
+    } else if (options.enabled && options.enabled.value) {
+      _resize(coors)
+    } else if (defaultOptions.enabled!) {
+      _resize(coors)
+    }
   }
 
   function _resize({ x, y }: Coordinates) {
+    if (!$element.value) return
     const minHeight = options.minHeight || 100
     const minWidth = options.minWidth || 200
 
-    if (!$element.value || !$handle.value) return
-    // @ts-ignore
-    const element: HTMLElement = $element.value.$el
-      ? // @ts-ignore
-        $element.value.$el
-      : $element.value
-
-    const { left, top } = element.getBoundingClientRect()
+    const { left, top } = $element.value.getBoundingClientRect()
     const { viewWidth, viewHeight } = getViewport()
 
     let width = x - offset.x - left
