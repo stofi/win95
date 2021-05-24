@@ -64,6 +64,7 @@ export default function (
     document.removeEventListener('mousedown', mouseDownHandler)
     document.removeEventListener('mouseup', mouseUpHandler)
     document.removeEventListener('mousemove', mouseMoveHandler)
+    window.removeEventListener('resize', resizeHandler)
   })
   function mouseDownHandler(event: MouseEvent) {
     if (!$element.value) return
