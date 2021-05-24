@@ -4,7 +4,7 @@
     ref="windowElement"
     :tabindex="isActive ? -1 : 1000"
     :fullscreen="fullscreen"
-    class="absolute flex flex-col select-none"
+    class="absolute flex flex-col select-none focus:outline-none"
     :style="{ ...computedStyle }"
   >
     <WTitle ref="dragHandle" :active="isActive" :fullscreen="fullscreen">

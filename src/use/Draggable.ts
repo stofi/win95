@@ -55,17 +55,40 @@ export default function (
   }
 
   onBeforeMount(() => {
-    document.addEventListener('mousedown', mouseDownHandler)
-    document.addEventListener('mouseup', mouseUpHandler)
-    document.addEventListener('mousemove', mouseMoveHandler)
+    document.addEventListener('mousedown', dragStart)
+    document.addEventListener('mouseup', dragEnd)
+    document.addEventListener('mousemove', dragMove)
+    document.addEventListener('touchstart', dragStart)
+    document.addEventListener('touchend', dragEnd)
+    document.addEventListener('touchcancel', dragEnd)
+    document.addEventListener('touchmove', dragMove)
     window.addEventListener('resize', resizeHandler)
   })
   onBeforeUnmount(() => {
-    document.removeEventListener('mousedown', mouseDownHandler)
-    document.removeEventListener('mouseup', mouseUpHandler)
-    document.removeEventListener('mousemove', mouseMoveHandler)
+    document.removeEventListener('mousedown', dragStart)
+    document.removeEventListener('mouseup', dragEnd)
+    document.removeEventListener('mousemove', dragMove)
+    document.removeEventListener('touchstart', dragStart)
+    document.removeEventListener('touchend', dragEnd)
+    document.removeEventListener('touchcancel', dragEnd)
+    document.removeEventListener('touchmove', dragMove)
     window.removeEventListener('resize', resizeHandler)
   })
+
+  function dragStart(event: MouseEvent | TouchEvent) {
+    event.preventDefault()
+    mouseDownHandler(event as MouseEvent)
+  }
+  function dragEnd(event: MouseEvent | TouchEvent) {
+    event.preventDefault()
+    mouseUpHandler(event as MouseEvent)
+  }
+  function dragMove(event: MouseEvent | TouchEvent) {
+    event.preventDefault()
+    mouseMoveHandler(event as MouseEvent)
+  }
+
+
   function mouseDownHandler(event: MouseEvent) {
     if (!$element.value) return
     // @ts-ignore
