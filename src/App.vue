@@ -9,7 +9,7 @@ useDarkmode()
 </script>
 
 <style lang="postcss">
-#app{
+html{
   @apply bg-green-800;
 }
 </style>
