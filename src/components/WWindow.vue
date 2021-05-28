@@ -1,6 +1,7 @@
 <template>
   <WBox
     @mousedown="activateWindow"
+    @touchstart="activateWindow"
     ref="windowElement"
     :tabindex="isActive ? -1 : 1000"
     :fullscreen="fullscreen"
@@ -64,5 +65,23 @@ const {
   resizable: props.resizable,
   x: props.x,
   y: props.y,
+  onDragStart() {
+    console.log('onDragStart')
+  },
+  onDragEnd() {
+    console.log('onDragEnd')
+  },
+  onResizeStart() {
+    console.log('onResizeStart')
+  },
+  onResizeEnd() {
+    console.log('onResizeEnd')
+  },
+  onMaximized() {
+    console.log('onMaximized')
+  },
+  onActivated() {
+    console.log('onActivated')
+  },
 })
 </script>

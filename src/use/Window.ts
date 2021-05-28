@@ -27,9 +27,12 @@ export default function (
   options: WindowOptions = {}
 ) {
   const { style: wmStyle, front } = useStack()
-  const { activate, isActive } = useActive()
+  const { activate, isActive } = useActive({
+    onActivated: options.onActivated
+  })
 
-  const resizeEnabled = computed(() => options.resizable)
+  const resizeEnabled = computed(() => options.resizable || false)
+
   const {
     style: resizeStyle,
     resizing,
@@ -41,10 +44,13 @@ export default function (
     height: options.height || 100,
     width: options.width || 200,
     enabled: resizeEnabled,
+    onMaximized: options.onMaximized,
+    onResizeEnd: options.onResizeEnd,
+    onResizeStart: options.onResizeStart,
   })
 
   const dragEnabled = computed(() =>
-    fullscreen.value ? false : options.draggable
+    fullscreen.value ? false : options.draggable || false
   )
 
   const {
@@ -53,6 +59,8 @@ export default function (
     move,
   } = useDraggable(windowElement, dragHandle, {
     enabled: dragEnabled,
+    onDragEnd: options.onDragEnd,
+    onDragStart: options.onDragStart
   })
   onMounted(() => {
     move({

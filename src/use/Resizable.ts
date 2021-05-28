@@ -9,6 +9,7 @@ import {
   nextTick,
   defineEmit,
   useContext,
+  onMounted,
   Ref,
 } from 'vue'
 
@@ -60,6 +61,14 @@ export default function (
 
   const cursor = computed(() => (resizing.value ? 'nw-resize' : 'auto'))
 
+  onMounted(() => {
+    const { viewWidth, viewHeight } = getViewport()
+    _resize({
+      x: size.x > viewWidth ? viewWidth : size.x,
+      y: size.y > viewHeight ? viewHeight : size.y,
+    })
+  })
+
   useDocumentEvents([
     { event: 'mousedown', handler: dragStart },
     { event: 'mouseup', handler: dragEnd },
@@ -69,6 +78,14 @@ export default function (
     { event: 'touchcancel', handler: dragEnd },
     { event: 'touchmove', handler: dragMove },
   ])
+
+  watch(resizing, (newvalue) => {
+    if (newvalue) {
+      options.onResizeStart && options.onResizeStart()
+    } else {
+      options.onResizeEnd && options.onResizeEnd()
+    }
+  })
 
   function dragStart(event: MouseEvent | TouchEvent) {
     mouseDownHandler(event as MouseEvent)

@@ -77,8 +77,16 @@ export default function (
     { event: 'touchend', handler: dragEnd },
     { event: 'touchcancel', handler: dragEnd },
     { event: 'touchmove', handler: dragMove },
-    { event: 'resize', handler: resizeHandler, window:true },
+    { event: 'resize', handler: resizeHandler, window: true },
   ])
+
+  watch(dragging, (newvalue) => {
+    if (newvalue) {
+      options.onDragStart && options.onDragStart()
+    } else {
+      options.onDragEnd && options.onDragEnd()
+    }
+  })
 
   function dragStart(event: MouseEvent | TouchEvent) {
     mouseDownHandler(event as MouseEvent)
@@ -134,10 +142,10 @@ export default function (
     const { viewWidth, viewHeight } = getViewport()
     const rect = getRect()
     if (x + rect.width > viewWidth) {
-      x = viewWidth - rect.width
+      x = viewWidth - rect.width -2
     }
     if (y + rect.height > viewHeight) {
-      y = viewHeight - rect.height
+      y = viewHeight - rect.height -2
     }
     if (x < 0) {
       x = 0
